@@ -20,17 +20,19 @@ void gameboard();
 
 char *userid;
 
-typedef struct player{
-    int x,y;
+typedef struct *loc{
+    char *loc;
+    int x;
+    int y;
+}LOC;
+
+
+typedef struct * player{
+    LOC *location;
     char weapon[5];
     int power;
-}PlAYER;
+}PLAYER;
 
-typedef struct loc{
-    float space[100][50];
-    float deep_sea[100][50];
-    float earth[100][50];
-}LOC;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -180,7 +182,16 @@ void LoginFile(char *ID){
 }
 
 void gameboard(){
-    printf("------------------------------------------\n\n");
-    printf("------------------------------------------\n\n");
+    LOC *location;
+    PLAYER *pichachu;
+
+    
+
+    pichachu -> power = 50;
+    pichachu -> weapon = 'Knife';
+    pichachu -> location = LOC -> space[20][30];
+
+    printf("Weapon : %s\n", pichachu -> weapon);
+    printf("Power  : %d\n", pichachu -> power);
     printf("------------------------------------------\n\n");
 }
