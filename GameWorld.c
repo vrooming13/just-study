@@ -2,9 +2,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
+#include <conio.h>
 #include <ctype.h>
 #include <Windows.h>
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+char *userid;
+int call_back = 0;
+
+typedef struct loc{
+    char area[10];
+    int x;
+    int y;
+}LOC;
+
+
+typedef struct player{
+    struct loc *location;
+    char weapon[20];
+    int power;
+}PLAYER;
+
+LOC *map;
+PLAYER *pichachu;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -14,27 +39,12 @@ void ValidID_save(char *ID);
 char* Login();
 void LoginFile(char *ID);
 
-void gameboard();
+void gameboard(int call);
+void move(struct player *character, struct loc *map);
+void ConvertSpace(struct loc *map);
+void Moveall(struct player *character, struct loc *map);
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
-char *userid;
-
-typedef struct *loc{
-    char *loc;
-    int x;
-    int y;
-}LOC;
-
-
-typedef struct * player{
-    LOC *location;
-    char weapon[5];
-    int power;
-}PLAYER;
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 int main(void){
 
@@ -58,7 +68,8 @@ int main(void){
     case 2:
         Login();
         LoginFile(userid);
-        gameboard();
+        printf("Run Game \n\n");
+        gameboard(call_back);
         break;
 
     default:
@@ -157,8 +168,9 @@ char* Login(){
 }
 
 void LoginFile(char *ID){
+
     FILE *fp;
-    int end;
+    BOOL valid = FALSE;
     char f_id[256];
     fp = fopen("ids.txt", "r");
     
@@ -167,31 +179,118 @@ void LoginFile(char *ID){
         printf("Checking.....\n\n");
         Sleep(300);
         if(strstr(f_id,ID) != 0){
-            printf("%36s", "Login Confirmation Complete!\n\n");
-            printf("%20s [%s]!!\n\n","Welcome",ID);
-            return;
+            valid = TRUE;
+            break;
         }
     }
 
+    //Valid ID
+    if(valid == TRUE){
+        fclose(fp);
+
+        printf("%36s", "Login Confirmation Complete!\n\n");
+        printf("%20s [%s]!!\n\n","Welcome",ID);
+
+        return;
+    }
+
     //NO Valid ID
-    fclose(fp);
+    else if(valid == FALSE){
+        fclose(fp);
+
+        printf("Sorry, Please Sign up as a member\n\n"); 
+        main();
+
+        return;
+    }
+}
+
+void gameboard(int call){
+    if(call != 0)
+        goto BACK;
+
+    printf("------------------------------------------\n\n");
     
-    printf("Sorry, Please Sign up as a member\n\n"); 
-    main();
+    map = (LOC *)malloc(sizeof(LOC));
+    pichachu =(PLAYER *)malloc(sizeof(PLAYER));
+
+    strcpy(map -> area, "Space");
+    map -> x = 25;
+    map -> y = 15;
+
+    pichachu -> power = 50;
+    strcpy(pichachu -> weapon, "Knife");
+    pichachu -> location = map;
+    
+    BACK:
+        printf("Weapon : %s\n", pichachu -> weapon);
+        printf("Power  : %d\n", pichachu -> power);
+        printf("Current Area : %s >> (x: %d, y: %d)\n\n", map->area, map -> x, map ->y);
+        printf("------------------------------------------\n\n");
+
+        Moveall(pichachu, map);
+        return;
+}
+
+void move(PLAYER *character, LOC *location){
+
+    printf("Move Character\n");
+    char key;
+    int count = 0;
+
+    while(1){
+        key = getch();
+        printf("%c\n",key);
+        location -> x = 50;
+        location -> y = 20;
+        printf("Current Area : %s >> (x: %d, y: %d)\n\n", location ->area, location->x, location->y );
+        count ++;
+
+        if(count > 5){
+            break;
+        }
+    }
     return;
 }
 
-void gameboard(){
-    LOC *location;
-    PLAYER *pichachu;
+void ConvertSpace(LOC *location){
 
-    
+    printf("Oops... You fall into a black hole\n\n");
+    int bhole[100][50];
+    srand(time(NULL));
 
-    pichachu -> power = 50;
-    pichachu -> weapon = 'Knife';
-    pichachu -> location = LOC -> space[20][30];
+    int convert_x = (rand() % 100);
+    int convert_y = (rand() % 50);
+    int convert;
 
-    printf("Weapon : %s\n", pichachu -> weapon);
-    printf("Power  : %d\n", pichachu -> power);
-    printf("------------------------------------------\n\n");
+    for(int x = 0; x<100; x++){
+        for(int y = 0; y<50; y++){
+            int random = rand() % 2;
+            bhole[x][y] = random;
+        }
+    }
+
+    if(bhole[convert_x][convert_y] == 1){
+        
+        convert = (rand() % 60) +1;
+        if(convert <= 20){
+            strcpy(location -> area, "Deep Sea");
+        } 
+        else if(20 < convert && convert <= 40 ){
+            strcpy(location -> area, "Earth");
+        }
+        else if(40 < convert){
+            strcpy(location -> area, "Space");
+        }
+    } 
+
+    return;
+}
+
+void Moveall(PLAYER *character, LOC *location){
+    move(character,location);
+    ConvertSpace(location);
+    call_back ++;
+    gameboard(call_back);
+    return;
 }
