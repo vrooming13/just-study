@@ -1,12 +1,20 @@
-## Mokpo National University
-## Computer Engineering Undergraduate Studies
-
-+ Just C/C++ Progragmming
-    + Simple Pratice C/C++ Codes
-
+## Computer Engineering 
+  
 + Python
-    + Training Code
+    + Algorithm Training Code
     + For Joining a Company
-    + Deep Learning Pratice
+
++ JavaScript
+    + Node.js
+    + Express
+    + React/Vue
+
++ CS(Computer Science)
+    + DB
+    + Network
+    + OS
+
++ Practice Linux Server
+    + Maybe....
 
 ## The Only is best
